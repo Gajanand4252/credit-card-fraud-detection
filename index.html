@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Credit Card Fraud Detection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="logo">💳 FraudGuard AI</div>
+
+    <ul>
+        <li>Home</li>
+        <li>Dashboard</li>
+        <li>About</li>
+    </ul>
+</nav>
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <h1>Credit Card Fraud Detection System</h1>
+    <p>AI-powered fraud detection using Machine Learning and Flask</p>
+</section>
+
+<!-- MAIN CONTAINER -->
+<div class="main-container">
+
+    <div class="card">
+
+        <h2>Transaction Analysis</h2>
+
+        <form method="POST" id="fraudForm">
+
+            <div class="grid">
+
+                <!-- Transaction Type -->
+                <div>
+                    <label>Transaction Type</label>
+
+                    <select name="type" required>
+                        <option value="PAYMENT" {% if form_data.type == "PAYMENT" %}selected{% endif %}>PAYMENT</option>
+
+                        <option value="TRANSFER" {% if form_data.type == "TRANSFER" %}selected{% endif %}>TRANSFER</option>
+
+                        <option value="CASH_OUT" {% if form_data.type == "CASH_OUT" %}selected{% endif %}>CASH_OUT</option>
+
+                        <option value="DEBIT" {% if form_data.type == "DEBIT" %}selected{% endif %}>DEBIT</option>
+
+                        <option value="CASH_IN" {% if form_data.type == "CASH_IN" %}selected{% endif %}>CASH_IN</option>
+                    </select>
+                </div>
+
+                <!-- Amount -->
+                <div>
+                    <label>Transaction Amount</label>
+
+                    <input type="number"
+                           step="0.01"
+                           name="amount"
+                           value="{{ form_data.amount }}"
+                           required>
+                </div>
+
+                <!-- Sender Balance -->
+                <div>
+                    <label>Old Balance (Sender)</label>
+
+                    <input type="number"
+                           step="0.01"
+                           name="oldbalanceOrg"
+                           value="{{ form_data.oldbalanceOrg }}"
+                           required>
+                </div>
+
+                <!-- Sender New Balance -->
+                <div>
+                    <label>New Balance (Sender)</label>
+
+                    <input type="number"
+                           step="0.01"
+                           name="newbalanceOrig"
+                           value="{{ form_data.newbalanceOrig }}"
+                           required>
+                </div>
+
+                <!-- Receiver Old Balance -->
+                <div>
+                    <label>Old Balance (Receiver)</label>
+
+                    <input type="number"
+                           step="0.01"
+                           name="oldbalanceDest"
+                           value="{{ form_data.oldbalanceDest }}"
+                           required>
+                </div>
+
+                <!-- Receiver New Balance -->
+                <div>
+                    <label>New Balance (Receiver)</label>
+
+                    <input type="number"
+                           step="0.01"
+                           name="newbalanceDest"
+                           value="{{ form_data.newbalanceDest }}"
+                           required>
+                </div>
+
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="predictBtn">
+                Analyze Transaction
+            </button>
+
+        </form>
+
+        <!-- RESULT -->
+        {% if result %}
+        <div class="result-box">
+
+            {% if prediction == 0 %}
+                <p class="safe">
+                    ✅ {{ result }}
+                </p>
+            {% else %}
+                <p class="fraud">
+                    ⚠️ {{ result }}
+                </p>
+            {% endif %}
+
+            {% if probability is not none %}
+            <div class="probability-box">
+                <h3>Fraud Probability</h3>
+
+                <div class="progress-bar">
+                    <div class="progress-fill"
+                         style="width: {{ probability }}%;">
+                    </div>
+                </div>
+
+                <p class="probability-text">
+                    {{ probability }}%
+                </p>
+            </div>
+            {% endif %}
+
+        </div>
+        {% endif %}
+
+        <!-- ERROR -->
+        {% if error %}
+        <div class="error-box">
+            <p>❌ {{ error }}</p>
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <p>© 2026 FraudGuard AI | Built using Flask & Machine Learning</p>
+</footer>
+
+<!-- SCRIPT -->
+<script>
+
+document.getElementById("fraudForm").addEventListener("submit", function() {
+
+    const btn = document.getElementById("predictBtn");
+
+    btn.innerHTML = "Analyzing Transaction...";
+
+    btn.disabled = true;
+});
+
+</script>
+
+</body>
+</html>
